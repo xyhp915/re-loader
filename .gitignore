@@ -1,0 +1,23 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+.eslintcache
+
+# Build Output
+/coverage
+/dist
+/local
+/reports
+/node_modules
+
+# Editor & OS
+.idea
+DS_Store
+
+yarn-debug.log*
+.DS_Store
+Thumbs.db
+.vscode
+*.sublime-project
+*.sublime-workspace
