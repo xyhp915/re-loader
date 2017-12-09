@@ -2,7 +2,6 @@ const {getOptions} = require('loader-utils')
 const validateOptions = require('schema-utils')
 const MagicString = require('magic-string')
 const createFilter = require('./utils/createFilter.js')
-const fs = require('fs')
 
 const schema = {
   type: Object,
@@ -60,7 +59,6 @@ function parseReplaces (replaces, patterns) {
         match: 'String|Regexp|Function',
         test: 'String|RegExp',
         replace: 'String|Function',
-        file: 'String',
         text: 'String',
         transform: 'Function'
       }
@@ -72,6 +70,7 @@ function parsePatterns (patterns, contents) {
     if (it._pass) {
       return contents.push(it)
     }
+
     // filter
     it.filter = createFilter(it.include, it.exclude)
 
@@ -83,29 +82,21 @@ function parsePatterns (patterns, contents) {
     } else if (isString(it.match)) {
       it.matcher = createFilter(it.match)
     }
+
     // test
     if (isRegExp(it.test)) {
       it.testIsRegexp = true
     } else if (isString(it.test)) {
       it.testIsString = true
     }
+
     // replace
     if (isString(it.replace)) {
       it.replaceIsString = true
     } else if (isFunction(it.replace)) {
       it.replaceIsFunction = true
     }
-    // content by file
-    if (isString(it.file)) {
-      it.replaceContent = (res) => {
-        let file = resolve(res.id, '../', it.file)
-        try {
-          res.content = fs.readFileSync(file).toString()
-        } catch (err) {
-          throw new Error('[rollup-plugin-re] can not readFile: ' + file)
-        }
-      }
-    }
+
     // text
     if (isString(it.text)) {
       it.replaceContent = (res) => {
